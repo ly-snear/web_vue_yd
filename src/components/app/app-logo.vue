@@ -1,6 +1,5 @@
 <style lang='less'>
 .app-logo{
-  font-family: Futura,Helvetica Neue For Number,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
   padding: 0px 24px;
   margin-bottom: 30px;
   line-height: @layout-header-height;
@@ -8,17 +7,23 @@
   overflow: hidden;
   white-space: nowrap;
   transition: padding .3s;
-  .app-logo-text {
-    font-size: 20px;
-    vertical-align: middle;
-  }
+  cursor: pointer;
   .app-logo-icon {
-    background: url(../../images/logo.png);
+    background: url(../../images/logo-icon.png);
     background-size: contain;
-    height: 26px;
-    width: 26px;
+    height: 40px;
+    width: 40px;
     display: inline-block;
     margin-right: 10px;
+    transition: .3s;
+    vertical-align: middle;
+  }
+  .app-logo-text {
+    background: url(../../images/logo-text.png);
+    background-size: contain;
+    height: 40px;
+    width: 100px;
+    display: inline-block;
     transition: .3s;
     vertical-align: middle;
   }
@@ -33,7 +38,10 @@
 }
 </style>
 <template>
-  <div class="app-logo"><router-link to="/"><span class="app-logo-icon"></span><span class="app-logo-text">HEYUI ADMIN</span></router-link></div>
+  <div class="app-logo" @click="path()">
+    <span class="app-logo-icon"></span>
+    <span class="app-logo-text"></span>
+  </div>
 </template>
 <script>
 export default {
@@ -41,7 +49,14 @@ export default {
     return {};
   },
   mounted() {},
-  methods: {},
+  methods: {
+    path() {
+      let user = G.get('user');
+      if (!user) return;
+      
+      this.$router.push({ name: 'Home' });
+    },
+  },
   computed: {}
 };
 </script>

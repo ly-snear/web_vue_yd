@@ -29,6 +29,7 @@ module.exports = {
     plugins: [
       new webpack.ProvidePlugin({
         Utils: [path.resolve(__dirname, 'src/js/common/utils'), 'default'],
+        Ajax: [path.resolve(__dirname, 'src/js/common/ajax'), 'default'],
         Manba: 'manba',
         HeyUI: 'heyui',
         Model: 'js-model',
@@ -39,12 +40,13 @@ module.exports = {
     ]
   },
   devServer: {
-    // proxy: {
-    // 此处应该配置为开发服务器的后台地址
-    // 配置文档： https://cli.vuejs.org/zh/config/#devserver-proxy
-    // '/api': {
-    //   target: 'http://xxx.xx.xx'
-    // }
-    // }
+    proxy: {
+      // 此处应该配置为开发服务器的后台地址
+      // 配置文档： https://cli.vuejs.org/zh/config/#devserver-proxy
+      '/api': {
+        target: 'http://192.168.4.49:8080',
+        changeOrigin: true
+      }
+    }
   }
 };

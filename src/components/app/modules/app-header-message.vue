@@ -88,13 +88,8 @@ export default {
   },
   methods: {
     init() {
-
     },
     getMessageList: async function () {
-      let resp = await R.Home.getMessageList();
-      if (resp.ok) {
-        this.messageList = resp.body;
-      }
     },
     goMessageDetail() {
       this.$refs.messageDropdown.hide();

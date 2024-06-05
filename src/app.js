@@ -4,11 +4,13 @@ import '@babel/polyfill';
 import Vue from 'vue';
 import App from 'components/App';
 
-import heyuiConfig from 'js/config/heyui-config';
 import routerConfig from 'js/config/router-config';
 import store from 'js/vuex/store';
 import 'js/vue/components';
 import 'js/vue/filters';
+
+import Uploader from 'vue-simple-uploader';
+import Print from 'vue-print-nb';
 
 require('./css/app.less');
 
@@ -16,12 +18,13 @@ require('./css/app.less');
 // process.env.NODE_ENV == 'development'
 
 // 使用mock文件， 自己开发的时候请删除
-require('./mock/index');
+// require('./mock/index');
 
 // HeyUI已经设定为全局变量，无需引用
 // 设定全局变量请参考根目录下的hey.conf.js文件
 
-heyuiConfig();
+Vue.use(Uploader);
+Vue.use(Print);
 Vue.use(HeyUI);
 
 const router = routerConfig();

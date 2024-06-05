@@ -18,7 +18,7 @@ import debounce from 'lodash.debounce';
   require("./lib/chart/pie");
   require("./lib/component/gridSimple");
  */
-import echarts from 'echarts/index.simple';
+import echarts from 'echarts/index.common';
 import theme from './theme';
 
 export default {

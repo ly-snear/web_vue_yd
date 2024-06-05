@@ -1,6 +1,6 @@
 .font-size(@var, @size) {
   .font@{var} {
-    font-size: @size  !important;
+    font-size: @size !important;
   }
 }
 
@@ -17,7 +17,6 @@
 .font-bold {
   font-weight: bold;
 }
-
 
 .common-page-tabs-bar {
   position: relative;
@@ -43,7 +42,6 @@
     line-height:32px;
   }
 }
-
 
 .common-status-filter-tabs {
   border: 1px solid fade( @primary-color, 10%);
@@ -129,7 +127,6 @@
   }
 }
 
-
 .common-list-container {
   .common-list-item {
     padding-top: 14px;
@@ -159,7 +156,7 @@
 
 .frame-page,
 .frame-flex-page {
-  margin: 30px;
+  padding: 30px;
   .clearfix;
 
   &.frame-flex-page {
@@ -218,4 +215,132 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: @primary-color;
   border-radius: 12px
+}
+
+.h-panel-title {
+  color: @primary-color;
+}
+
+.circle {
+  border-radius: 30px;
+}
+
+.green-color {
+  color: @primary-color;
+}
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.modal-dialog {
+  width: 600px;
+  text-align: center;
+
+  .modal-title {
+    font-size: 24px;
+    margin: 30px;
+  }
+  .modal-content {
+    font-size: 20px;
+    margin: 30px;
+  }
+  .modal-btn {
+    margin: 20px;
+  }
+}
+
+.model-right {
+  width: 600px;
+  padding: 40px;
+
+  .title {
+    color: @primary-color;
+    font-size: 24px;
+    height: 80px;
+  }
+}
+
+.h-form .h-form-item {
+  padding-bottom: 30px;
+}
+
+.modal-confirm {
+  .h-notify-container {
+    width: 500px;
+    padding: 20px;
+
+    .h-modal-header {
+      padding: 10px !important;
+      font-weight: bold;
+      font-size: 18px !important;
+      text-align: center;
+    }
+
+    .h-notify-content {
+      padding: 20px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .h-modal-footer {
+      text-align: center !important;
+      
+      .h-btn {
+        border-radius: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.click {
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}
+
+.preview {
+  .h-uploader-image, .h-uploader-image-empty {
+    width: 160px;
+    height: 120px;
+    margin-right: 30px;
+    margin-top: 30px;
+  }
+}
+
+.cert-image {
+  .h-uploader-image, .h-uploader-image-empty {
+    width: 160px;
+    height: 120px;
+  }
+}
+
+.eval-radio {
+  .h-radio {
+    label {
+      height: 26px !important;
+      line-height: 26px !important;
+      margin-top: 10px;
+    }
+    margin-bottom: 20px;
+  }  
+}
+
+.h-form-item-label {
+  font-weight: bold;
+}
+
+.h-input-addon {
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+.h-btn-xs {
+  span {
+    font-size: 14px;
+  }
 }

@@ -2,10 +2,26 @@ import axios from 'axios';
 import qs from 'qs';
 import Utils from './utils';
 
-const DefaultParam = { repeatable: false };
+function errstr(str) {
+  switch (str) {
+    case 'permission':
+      return '没有操作权限';
+    case 'username':
+      return '该用户不存在';
+    case 'token':
+      return '请重新登录';
+    default:
+      return str;
+  }
+}
 
+const DefaultParam = { repeatable: false };
+// let that = this;
 let ajax = {
-  PREFIX: '/api',
+  // PREFIX: '/api',
+  // PREFIX: 'https://api.nnyun.net:8899/api',
+  // PREFIX: 'http://127.0.0.1:8080/api',
+  PREFIX: 'http://shuhua.nnyun.net/api',
   Author: Utils.getAuthor() || 'heyui',
   requestingApi: new Set(),
   extractUrl: function (url) {
@@ -28,10 +44,7 @@ let ajax = {
       url,
       method: 'GET'
     };
-    if (param) {
-      ;
-      params.params = param;
-    }
+    if (param) params.params = param;
     return this.ajax(params, extendParam);
   },
   post: function (url, param, extendParam) {
@@ -71,16 +84,24 @@ let ajax = {
     }
     if (params.method != 'GET') {
       if (this.isRequesting(url)) {
-        return new Promise((resolve, reject) => { resolve({ ok: false, msg: '重复请求' }); });
+        return new Promise((resolve, reject) => {
+          resolve({ ok: false, msg: '重复请求' });
+        });
       }
       if (params.repeatable === false) {
         this.addRequest(url);
       }
     }
+    // let user = G.get('user');
+    let user = JSON.parse(localStorage.getItem('user'));
+    // console.log('-->', user);
     let header = {
       author: this.Author,
-      Authorization: Utils.getLocal('token')
+      // token: user ? user.token : 'x'
     };
+    if (user) {
+      header.token = user.token;
+    }
     let defaultParam = {
       headers: header,
       responseType: 'json',
@@ -102,23 +123,22 @@ let ajax = {
         let data = response.data;
         let status = response.status;
         // 如果后端统一封装返回，即所有的请求都是200, 错误码由返回结果提供，则使用以下代码获取状态
-        // if (status == 200) {
-        //   status = data.status;
-        // }
         if (status != 200) {
-          if (status == 401) {
-            window.top.location = '/login';
-            return;
+          data.ok = false;
+          switch (status) {
+            case 400:
+              HeyUI.$Message.error('请求不存在');
+              break;
+            case 500:
+              HeyUI.$Message.error('后台异常');
+              break;
+            default:
+              HeyUI.$Message.error('请求异常');
+              break;
           }
-          if (status == 500) {
-            HeyUI.$Message.error('后台异常');
-          } else if (status == 404) {
-            HeyUI.$Message.error('请求不存在');
-          } else if (status != 200) {
-            HeyUI.$Message.error(data._msg || '请求异常');
-          }
+        } else if (!data.ok) {
+          HeyUI.$Message.error(errstr(data.msg));
         }
-        data.ok = data.status == 200;
         resolve(data);
       }).catch(() => {
         that.deleteRequest(params.url);
@@ -129,4 +149,5 @@ let ajax = {
     });
   }
 };
+
 export default ajax;

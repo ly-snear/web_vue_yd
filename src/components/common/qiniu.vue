@@ -56,8 +56,8 @@ export default {
       let param = {
         runtimes: 'html5',
         browse_button: this.$refs.uploader.getBrowseButton(),
-        uptoken_url: 'https://www.heyui.top/api/uptoken',
-        domain: '//img.heyui.top',
+        uptoken_url: '/api/qiniu/token',
+        domain: '//images.aipingke.net',
         chunk_size: '4mb',
         unique_names: true,
         auto_start: false,
@@ -65,7 +65,7 @@ export default {
         init: {
           FilesAdded(up, files) {
             if (that.limit && (files.length + that.value.length > that.limit)) {
-              that.$Message.error(`你上传的文件超过${that.limit}个。`);
+              that.$Message.error(`你上传的文件超过${that.limit}个`);
               return;
             }
             files.forEach((file) => {
@@ -85,24 +85,19 @@ export default {
             up.start();
           },
           BeforeUpload(up, file) {
-
           },
           UploadProgress(up, file) {
-            // log(file.percent);
           },
           FileUploaded(up, file, info) {
-            // log('FileUploaded', file.status);
             let domain = up.getOption('domain');
             let res = JSON.parse(info.response);
-            let sourceLink = `${domain}/${res.key}`; // 获取上传成功后的文件的Url
-            file.url = sourceLink;
+            file.url = `${domain}/${res.key}`; // 获取上传成功后的文件的Url
           },
           Error(up, err, errTip) {
             that.uploadList.splice(0, that.uploadList.length);
             that.$Message.error(errTip);
           },
           UploadComplete() {
-            that.$emit('completeUpload');
             let fileList = that.$refs.uploader.getFileList();
             //   fileList.map(item=>{
             //     // 对返回的数据做最后的组装
@@ -113,6 +108,7 @@ export default {
             if (that.type == 'files' || that.type == 'images') {
               that.uploadList.splice(0, that.uploadList.length);
             }
+            that.$emit('completeUpload');
           }
           // Key(up, file) {
           //     // 若想在前端对每个文件的key进行个性化处理，可以配置该函数

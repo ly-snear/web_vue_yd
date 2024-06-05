@@ -1,137 +1,171 @@
 <style lang='less'>
-.app-home-vue {
-  .home-part-body {
-    height: 350px;
-    .echarts-vue {
-      height: 350px;
+.fill-up {
+  padding: 10px;
+
+  .h-row {
+    height: 100%;
+
+    > .h-col {
+      height: 100%;
     }
   }
 
-  .home-part-body2 {
-    height: 420px;
-    .echarts-vue {
-      height: 420px;
-    }
+  img {
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    margin: 10px;
+    cursor: pointer;
   }
 
-  .progress-div {
-    >p {
-      padding: 8px 0;
+  .content {
+    position: absolute;
+    top: 40%;
+    left: 160px;
+
+    .text-title {
+      font-size: 32px;
+      color: white;
     }
-    .h-progress {
-      &-title {
-        color: @dark2-color;
-        font-size: 15px;
-      }
-      &-text {
-        width: 40px;
-      }
+
+    .text-small {
+      font-size: 16px;
+      color: white;
+    }
+
+    .h-btn {
+      width: 180px;
+      height: 50px;
+      margin-top: 10px;
     }
   }
 }
+
+.fade-leave-active {
+  transition: opacity 1s;
+  opacity: 0;
+}
 </style>
 <template>
-  <div class="app-home-vue frame-page">
-    <Row :space="30">
-      <Cell :xs='24' :sm='24' :md='24' :lg='16' :xl='16'>
-        <div class="h-panel">
-          <div class="relative">
-            <Tabs class="common-panel-tabs" v-model="type" :datas="{type1: '数据走势', type2: '数据分布'}"></Tabs>
-            <div class="middle-right" style="right: 25px;"><span class="text-hover" @click="openMore">查看更多</span></div>
-          </div>
-          <div class="home-part-body">
-            <Chart :options="data1" v-if="type=='type1'" key="type1"></Chart>
-            <Chart :options="data3" v-if="type=='type2'" key="type2"></Chart>
-          </div>
+  <div>
+    <div class="full-screen fill-up">
+      <Row>
+        <Cell width="6">
+          <img src="/static/images/home/pingtai.png" @click="path()">
+        </Cell>
+        <Cell width="18">
+          <Row direction="column">
+            <Cell width="24" style="height: 60%;">
+              <Row direction="column">
+                <Cell width="18">
+                  <Row direction="column">
+                    <Cell :width="24" style="height: 40%;">
+                      <Row>
+                        <Cell :width="8">
+                          <img src="/static/images/home/attendance.png" @click="path('AttendanceStat')">
+                        </Cell>
+                        <Cell :width="8">
+                          <img src="/static/images/home/participate.png" @click="path('ParticipateStat')">
+                        </Cell>
+                        <Cell :width="8">
+                          <img src="/static/images/home/classwork.png" @click="path('ClassWorkStat')">
+                        </Cell>
+                      </Row>
+                    </Cell>
+                    <Cell :width="24" style="height: 60%;">
+                      <img src="/static/images/home/artistic.png" @click="path('ArtisticStat')">
+                    </Cell>
+                  </Row>
+                </Cell>
+                <Cell width="6">
+                  <img src="/static/images/home/activity.png" @click="path('ActivityStat')">
+                </Cell>
+              </Row>
+            </Cell>
+            <Cell width="24" style="height: 40%;">
+              <img src="/static/images/home/konwledge.png" @click="path()">
+            </Cell>
+          </Row>
+        </Cell>
+      </Row>
+    </div>
+    <transition name="fade">
+      <div class="full-screen fill-up" v-show="show">
+        <img src="/static/images/home/loading.png" style="cursor: default;">
+        <div class="content">
+          <p class="text-title">欢迎使用</p>
+          <p class="text-title">艺术素质测评系统</p>
+          <Button size="s" :no-border="true" text-color="primary" color="white" :circle="true" @click="show=false">
+            立即进入
+          </Button>
+          <p class="text-small"><i class="icon-clock">&nbsp;{{ index }}秒后自动进入</i></p>
         </div>
-      </Cell>
-      <Cell :xs='24' :sm='24' :md='24' :lg='8' :xl='8'>
-        <div class="h-panel">
-          <div class="h-panel-bar">
-            <div class="h-panel-title">订单统计</div>
-            <div class="h-panel-right"><span class="gray-color">总共达成</span><i class="h-split"></i><span class="font20 primary-color">200</span><i class="h-split"></i><span class="gray-color">W</span></div>
-          </div>
-          <div class="h-panel-body progress-div home-part-body">
-            <p><Progress :percent="99" color="green"><span slot="title">订单状态</span><span slot="text">4个</span></Progress></p>
-            <p><Progress :percent="88" color="blue"><span slot="title">订单状态</span><span slot="text">0个</span></Progress></p>
-            <p><Progress :percent="55" color="red"><span slot="title">订单状态</span><span slot="text">0个</span></Progress></p>
-            <p><Progress :percent="77" color="blue"><span slot="title">订单状态</span><span slot="text">0个</span></Progress></p>
-            <p><Progress :percent="66" color="yellow"><span slot="title">订单状态</span><span slot="text">0个</span></Progress></p>
-          </div>
-        </div>
-      </Cell>
-
-      <Cell :xs='24' :sm='24' :md='24' :lg='16' :xl='16'>
-        <div class="h-panel">
-          <div class="h-panel-bar">
-            <div class="h-panel-title">数据比例</div>
-          </div>
-          <div class="home-part-body2">
-            <Chart :options="data2"></Chart>
-          </div>
-        </div>
-      </Cell>
-
-      <Cell :xs='24' :sm='24' :md='24' :lg='8' :xl='8'>
-        <div class="h-panel">
-          <div class="h-panel-bar">
-            <div class="h-panel-title">数据比例</div>
-          </div>
-          <div class="h-panel-body home-part-body2">
-            <Row :space="20">
-              <Cell :width="10" class="text-right">
-                <h-circle :percent="76" :stroke-width="10" :size="90">
-                  <p><span class="font28">{{parseInt(123*76/100)}}</span><span class="gray-color"> / 123</span></p>
-                </h-circle>
-              </Cell>
-              <Cell :width="14">
-                <p class="gray-color">目前达成比例</p>
-                <p class="dark-color font22">122,332,98</p>
-              </Cell>
-              <p class="clearfix"></p>
-              <Cell :width="10" class="text-right">
-                <h-circle :percent="99" :stroke-width="10" :size="90"  color="green">
-                  <p><span class="font28">{{parseInt(123*76/100)}}</span><span class="gray-color"> / 123</span></p>
-                </h-circle>
-              </Cell>
-              <Cell :width="14">
-                <p class="gray-color">目前达成比例</p>
-                <p class="dark-color font22">122,332,98</p>
-              </Cell>
-              <p class="clearfix"></p>
-              <Cell :width="10" class="text-right">
-                <h-circle :percent="22" :stroke-width="10" :size="90" color="red">
-                  <p><span class="font28">{{parseInt(123*76/100)}}</span><span class="gray-color"> / 123</span></p>
-                </h-circle>
-              </Cell>
-              <Cell :width="14">
-                <p class="gray-color">目前达成比例</p>
-                <p class="dark-color font22">122,332,98</p>
-              </Cell>
-            </Row>
-          </div>
-        </div>
-      </Cell>
-    </Row>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
-import data1 from 'components/demo-components/components/datas/data1';
-import data2 from 'components/demo-components/components/datas/data2';
-import data3 from 'components/demo-components/components/datas/data4';
+import { EventBus } from '../../js/common/event-bus';
 
 export default {
   data() {
     return {
-      data1,
-      data2,
-      data3,
-      type: 'type1'
+      index: 5,
+      show: true
     };
   },
+  created() {
+    if (this.$route.query.token) {
+      let token = this.$route.query.token;
+      console.log('令牌：' + token);
+      this.loading = true;
+      Ajax.get('/user/token', {
+        token: token
+      }).then((resp) => {
+        this.loading = false;
+        if (resp.ok) {
+          this.go(resp.body);
+        } else {
+          this.$router.replace({ name: 'Login' });
+        }
+      });
+    } else {
+      this.boot();
+    }
+  },
   methods: {
-    openMore() {
-      this.$router.push({ name: 'Chart' });
+    go(body) {
+      if (!body.token) return;
+      if (!body.avatar || body.avatar.length == 0) {
+        body.avatar = '/static/images/avatar.png';
+      }
+      G.set('user', body);
+      localStorage.setItem('user', JSON.stringify(body));
+      this.$store.commit('setUser', body);
+      Utils.saveCookie('user', JSON.stringify(body));
+      EventBus.$emit('message_resource_login_ok', {});
+      this.boot();
+    },
+    boot() {
+      console.log('从首页引导... ...');
+      Ajax.get('/dashboard/setup', {}).then(resp => {
+        if (resp.ok) {
+          G.set('organizes', resp.body.organize);
+          G.set('classes', resp.body.class);
+          G.set('years', resp.body.year);
+        }
+      });
+
+      setInterval(() => {
+        if (this.show && this.index > 0) {
+          this.index = this.index - 1;
+          this.show = this.index > 0;
+        }
+      }, 1000);
+    },
+    path(name) {
+      if (name) {
+        this.$router.push({ name });
+      }
     }
   }
 };

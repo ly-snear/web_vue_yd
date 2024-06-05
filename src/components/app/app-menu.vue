@@ -1,56 +1,80 @@
 <style lang="less">
-
-.app-menu{
-  .h-menu{
-    font-size: 14px;
-    .h-menu-li-selected{
-      .h-menu-show:after {
-        width: 4px;
-      }
-    }
-    > li >.h-menu-show {
-      font-size: 15px;
-      .h-menu-show-icon {
-        font-size: 20px;
-      }
-      .h-menu-show-desc{
-        transition: opacity 0.1s cubic-bezier(0.645, 0.045, 0.355, 1), width 0.1s cubic-bezier(0.645, 0.045, 0.355, 1);
-      }
-    }
-  }
-  .h-menu.h-menu-size-collapse > .h-menu-li > .h-menu-show {
-    padding-left: 24px;
-    .h-menu-show-icon {
-      font-size: 20px;
-    }
-  }
-  .h-menu.h-menu-white {
-    color: rgb(49, 58, 70);
-  }
-
+.func-normal-selected {
+  background-color: @primary-color;
+  border-color: @primary-color;
+  border-radius: 24px;
+  color: white;
 }
 
+.func-collapse-selected {
+  background-color: @primary-color;
+  color: white;
+}
+
+.app-menu {
+  .h-menu-mode-normal {
+    font-size: 14px;
+
+    .h-menu-li {
+      padding: 8px 20px;
+    }
+
+    .h-menu-li-selected {
+      .func-normal-selected();
+    }
+
+    // .h-menu-li-opened {
+    //   > .h-menu-show {
+    //     .func-normal-selected();
+    //   }
+    // }
+    .h-menu-li .h-menu-li {
+      .h-menu-show {
+        padding-left: 20px;
+      }
+
+      .h-menu-li .h-menu-show {
+        padding-left: 20px;
+      }
+    }
+  }
+
+  .h-menu-size-collapse {
+    .h-menu-li-selected {
+      .func-collapse-selected();
+    }
+
+    // .h-menu-li-opened {
+    //   > .h-menu-show {
+    //     .func-collapse-selected();
+    //   }
+    // }
+  }
+}
 </style>
 <template>
   <div class="app-menu">
     <appLogo></appLogo>
-    <Menu :datas="menus" :inlineCollapsed="siderCollapsed" @click="trigger" ref='menu' :className="`h-menu-${theme}`"></Menu>
+    <Menu :datas="menus" :inlineCollapsed="siderCollapsed" @click="trigger" ref='menu'
+          :className="`h-menu-${theme}`"></Menu>
     <div class="app-menu-mask" @click="hideMenu"></div>
   </div>
 </template>
 <script>
-
 import { mapState } from 'vuex';
 import appLogo from './app-logo';
 import { getMenus } from 'js/config/menu-config';
+import { EventBus } from '../../js/common/event-bus';
 
 export default {
   props: {
     theme: String
   },
   data() {
+    let user = JSON.parse(localStorage.getItem('user'));
     return {
-      menus: []
+      menus: [],
+      user: user || {},
     };
   },
   watch: {
@@ -59,24 +83,17 @@ export default {
     }
   },
   mounted() {
-    this.init();
-    const listener = G.addlistener('SYS_MENU_UPDATE', () => {
-      this.init();
-    });
-    this.$once('hook:beforeDestroy', function () {
-      G.removelistener(listener);
+    // let user = G.get('user');
+    if (!this.user) return;
+    this.menus = getMenus(this.user.level);
+    this.$nextTick(() => {
+      this.menuSelect();
     });
   },
   computed: {
     ...mapState(['siderCollapsed'])
   },
   methods: {
-    init() {
-      this.menus = getMenus(G.get('SYS_MENUS'));
-      this.$nextTick(() => {
-        this.menuSelect();
-      });
-    },
     menuSelect() {
       if (this.$route.name) {
         this.$refs.menu.select(this.$route.name);
@@ -92,6 +109,19 @@ export default {
   },
   components: {
     appLogo
+  },
+  created() {
+    EventBus.$on('message_resource_login_ok', (msg) => {
+      this.user = JSON.parse(localStorage.getItem('user'));
+      this.menus = getMenus(this.user.level);
+      this.$nextTick(() => {
+        this.menuSelect();
+      });
+      console.log('menu:登录成功');
+    });
+  },
+  beforeDestroy() {
+    EventBus.$off('message_resource_login_ok', {});
   }
 };
 </script>
